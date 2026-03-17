@@ -3,8 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { signInWithEmailAndPassword } from "firebase/auth"
-import { auth } from "@/lib/firebase"
+import supabase from "@/lib/supabaseClient"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
@@ -32,9 +31,30 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      await signInWithEmailAndPassword(auth, email, password)
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
+      if (error) throw error
+
+      const user = data.user
+
+      // Ensure profile exists by delegating to the server API. This avoids
+      // client-side RLS/permission issues when sessions are not persisted.
+      try {
+        await fetch('/api/create-profile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: user?.email ?? email, full_name: null }),
+        })
+      } catch (e) {
+        console.warn('create-profile API failed', e)
+      }
+
       const params = new URLSearchParams(window.location.search)
-      const redirect = params.get("redirect") || "/"
+      let redirect = params.get("redirect") || "/"
+      if (redirect.startsWith('/courses')) redirect = '/courses'
       router.push(redirect)
     } finally {
       setLoading(false)

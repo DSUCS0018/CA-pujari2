@@ -2,8 +2,8 @@
 
 import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
-import { auth } from "@/lib/firebase"
+
+import supabase from "@/lib/supabaseClient"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
@@ -38,25 +38,44 @@ export default function SignupClient() {
     setLoading(true)
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      )
+      const { data, error } = await supabase.auth.signUp({ email, password })
 
-      if (userCredential.user) {
-        await updateProfile(userCredential.user, {
-          displayName: name,
+      // If signup was rate-limited on email sending, fall back to server-side
+      // admin create to avoid throttles (server uses service role key).
+      if (error && (error.status === 429)) {
+        try {
+          const res = await fetch('/api/admin-create-user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password, full_name: name }),
+          })
+          const json = await res.json()
+          if (!res.ok) throw new Error(json?.error || json?.detail || 'admin-create-user failed')
+        } catch (e: any) {
+          // surface server error instead of original signup error
+          throw new Error(e?.message ?? String(e))
+        }
+      } else if (error) {
+        // other signup errors: surface to user
+        throw error
+      }
+
+      const user = data?.user
+
+      // Ensure profile exists (safe to call regardless)
+      try {
+        await fetch('/api/create-profile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, full_name: name }),
         })
+      } catch (e) {
+        console.warn('create-profile API failed', e)
       }
 
-      if (redirectParam) {
-        router.push(redirectParam)
-      } else if (course) {
-        router.push(`/courses/${course}`)
-      } else {
-        router.push("/")
-      }
+      if (redirectParam) router.push(redirectParam)
+      else if (course) router.push(`/courses`)
+      else router.push("/")
     } catch (err: any) {
       setError(err.message)
     } finally {

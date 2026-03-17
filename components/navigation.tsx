@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useAuth } from "@/context/AuthContext"
+import supabase from "@/lib/supabaseClient"
 import { Menu, X } from "lucide-react"
 import { motion } from "framer-motion"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -18,6 +20,38 @@ export function Navigation() {
     { label: "About", href: "/about" },
     { label: "Contact", href: "/contact" },
   ]
+
+  function AuthArea() {
+    const { user, loading, session } = useAuth()
+    const router = useRouter()
+
+    const displayName =
+      (user as any)?.user_metadata?.full_name || (user as any)?.user_metadata?.fullName || (user as any)?.email
+
+    const handleSignOut = async () => {
+      await supabase.auth.signOut()
+      router.push('/')
+    }
+
+    if (loading) return null
+
+    if (!user)
+      return (
+        <button onClick={() => router.push('/login')} className="text-sm font-medium text-primary">
+          Login
+        </button>
+      )
+
+    return (
+      <div className="flex items-center gap-3">
+        <div className="text-sm text-foreground">
+          <div className="font-medium">{displayName}</div>
+          <div className="text-xs text-muted-foreground">{(user as any)?.email}</div>
+        </div>
+        <button onClick={handleSignOut} className="text-sm text-red-500">Sign out</button>
+      </div>
+    )
+  }
 
   return (
     <motion.nav
@@ -54,6 +88,7 @@ export function Navigation() {
           {/* Right (desktop) */}
           <div className="hidden md:flex items-center gap-4">
             <ThemeToggle />
+            <AuthArea />
           </div>
 
           {/* Mobile controls: show theme toggle and menu button */}
@@ -86,6 +121,8 @@ export function Navigation() {
           </div>
         )}
       </div>
+
+  
     </motion.nav>
   )
 }

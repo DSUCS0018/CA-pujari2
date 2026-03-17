@@ -1,81 +1,118 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
 import { Clock, Users, ArrowRight, Book } from "lucide-react"
 import { motion } from "framer-motion"
 import { fadeUp, stagger } from "@/lib/animations"
+import supabase from "@/lib/supabaseClient"
+
+type Course = {
+  id: string
+  title: string
+  description?: string
+  duration?: string
+  level?: string
+  modules?: number
+  price?: string
+  students_count?: number
+}
 
 export default function CoursesPage() {
-  const courses = [
+  const [courses, setCourses] = useState<Course[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let mounted = true
+    async function load() {
+      try {
+        const res = await fetch('/api/courses')
+        const json = await res.json()
+        if (res.ok) {
+          if (mounted) setCourses((json.data as Course[]) ?? [])
+        } else {
+          // eslint-disable-next-line no-console
+          console.error('Failed to fetch /api/courses', json)
+        }
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error('Error fetching /api/courses', err)
+      }
+      if (mounted) setLoading(false)
+    }
+    load()
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  // fallback to original hardcoded demo data when DB returns empty
+  const defaultCourses: Course[] = [
     {
-      id: 1,
-      title: "Trading Fundamentals",
-      description:
-        "Learn the foundations of stock market trading with clarity and confidence.",
-      duration: "4 weeks",
-      students: "2,500+",
-      price: "₹4,999",
-      level: "Beginner",
+      id: '1',
+      title: 'Trading Fundamentals',
+      description: 'Learn the foundations of stock market trading with clarity and confidence.',
+      duration: '4 weeks',
+      students_count: 2500,
+      price: '₹4,999',
+      level: 'Beginner',
       modules: 12,
     },
     {
-      id: 2,
-      title: "Technical Analysis Mastery",
-      description:
-        "Read charts like a professional using proven technical frameworks.",
-      duration: "6 weeks",
-      students: "1,800+",
-      price: "₹7,999",
-      level: "Beginner",
+      id: '2',
+      title: 'Technical Analysis Mastery',
+      description: 'Read charts like a professional using proven technical frameworks.',
+      duration: '6 weeks',
+      students_count: 1800,
+      price: '₹7,999',
+      level: 'Beginner',
       modules: 18,
     },
     {
-      id: 3,
-      title: "Risk Management & Position Sizing",
-      description:
-        "Protect your capital and trade with discipline, not emotion.",
-      duration: "3 weeks",
-      students: "1,200+",
-      price: "₹3,999",
-      level: "Beginner",
+      id: '3',
+      title: 'Risk Management & Position Sizing',
+      description: 'Protect your capital and trade with discipline, not emotion.',
+      duration: '3 weeks',
+      students_count: 1200,
+      price: '₹3,999',
+      level: 'Beginner',
       modules: 8,
     },
     {
-      id: 4,
-      title: "Market Psychology",
-      description:
-        "Understand fear, greed, and mindset — the real edge in trading.",
-      duration: "4 weeks",
-      students: "950+",
-      price: "₹5,999",
-      level: "Beginner",
+      id: '4',
+      title: 'Market Psychology',
+      description: 'Understand fear, greed, and mindset — the real edge in trading.',
+      duration: '4 weeks',
+      students_count: 950,
+      price: '₹5,999',
+      level: 'Beginner',
       modules: 10,
     },
     {
-      id: 5,
-      title: "Day Trading Strategies",
-      description:
-        "Intraday frameworks designed for real-time market conditions.",
-      duration: "5 weeks",
-      students: "1,400+",
-      price: "₹6,999",
-      level: "Beginner",
+      id: '5',
+      title: 'Day Trading Strategies',
+      description: 'Intraday frameworks designed for real-time market conditions.',
+      duration: '5 weeks',
+      students_count: 1400,
+      price: '₹6,999',
+      level: 'Beginner',
       modules: 15,
     },
     {
-      id: 6,
-      title: "Option Trading Basics",
-      description:
-        "Understand options without confusion — calls, puts, and basics.",
-      duration: "6 weeks",
-      students: "850+",
-      price: "₹8,999",
-      level: "Beginner",
+      id: '6',
+      title: 'Option Trading Basics',
+      description: 'Understand options without confusion — calls, puts, and basics.',
+      duration: '6 weeks',
+      students_count: 850,
+      price: '₹8,999',
+      level: 'Beginner',
       modules: 16,
     },
   ]
+
+  const effectiveCourses = courses.length ? courses : defaultCourses
 
   return (
     <>
@@ -105,9 +142,8 @@ export default function CoursesPage() {
       <section className="py-28 bg-background">
         <motion.div
           variants={stagger}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
+          initial={false}
+          animate="visible"
           className="max-w-7xl mx-auto px-6"
         >
           <motion.h2
@@ -117,8 +153,19 @@ export default function CoursesPage() {
             Choose Your Learning Path
           </motion.h2>
 
+          <div className="mb-6 text-sm text-muted-foreground">
+            Showing {effectiveCourses.length} course(s)
+            <ul className="mt-2">
+              {effectiveCourses.slice(0,5).map((c) => (
+                <li key={c.id}>{c.title}</li>
+              ))}
+            </ul>
+          </div>
+
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {courses.map((course) => (
+            {loading && <div>Loading courses...</div>}
+            {!loading && effectiveCourses.length === 0 && <div>No courses available.</div>}
+            {effectiveCourses.map((course) => (
               <motion.div
                 key={course.id}
                 variants={fadeUp}
@@ -148,10 +195,10 @@ export default function CoursesPage() {
                       <Clock size={16} /> {course.duration}
                     </div>
                     <div className="flex items-center gap-3">
-                      <Book size={16} /> {course.modules} modules
+                      <Book size={16} /> {course.modules ?? 0} modules
                     </div>
                     <div className="flex items-center gap-3">
-                      <Users size={16} /> {course.students} learners
+                      <Users size={16} /> {course.students_count ?? 0} learners
                     </div>
                   </div>
 
@@ -164,7 +211,6 @@ export default function CoursesPage() {
                       </p>
                     </div>
 
-                    {/* ✅ SAME ENROLL LOGIC */}
                     <Link
                       href={`/signup?course=${course.id}`}
                       className="group px-6 py-3 bg-primary text-primary-foreground

@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
@@ -7,56 +8,100 @@ import { Calendar, Clock, Users, Video } from "lucide-react"
 import WebinarBookButton from "@/components/webinar-book-button"
 import { motion } from "framer-motion"
 import { fadeUp, stagger } from "@/lib/animations"
+import supabase from "@/lib/supabaseClient"
+
+function formatDateTime(iso?: string) {
+  if (!iso) return '-'
+  try {
+    return new Intl.DateTimeFormat('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    }).format(new Date(iso))
+  } catch {
+    return iso
+  }
+}
+
+function formatDate(iso?: string) {
+  if (!iso) return '-'
+  try {
+    return new Intl.DateTimeFormat('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    }).format(new Date(iso))
+  } catch {
+    return iso
+  }
+}
+
+type Webinar = {
+  id: string
+  title: string
+  description?: string
+  starts_at?: string
+  duration_minutes?: number
+  platform?: string
+  price?: string
+  seats?: number
+}
 
 export default function WebinarsPage() {
-  const upcomingWebinars = [
-    {
-      id: 1,
-      title: "Stock Market Basics for Beginners",
-      date: "January 15, 2026",
-      time: "7:00 PM IST",
-      duration: "90 mins",
-      platform: "Zoom",
-      price: "Free",
-      seats: "500",
-    },
-    {
-      id: 2,
-      title: "Candlestick Patterns That Actually Work",
-      date: "January 22, 2026",
-      time: "7:00 PM IST",
-      duration: "120 mins",
-      platform: "Google Meet",
-      price: "₹299",
-      seats: "300",
-    },
-    {
-      id: 3,
-      title: "Risk Management Strategies",
-      date: "February 5, 2026",
-      time: "6:30 PM IST",
-      duration: "100 mins",
-      platform: "Zoom",
-      price: "₹499",
-      seats: "400",
-    },
-    {
-      id: 4,
-      title: "Live Trading Session: Real Market Analysis",
-      date: "February 12, 2026",
-      time: "9:00 AM IST",
-      duration: "150 mins",
-      platform: "Zoom",
-      price: "₹799",
-      seats: "200",
-    },
+  const [upcomingWebinars, setUpcoming] = useState<Webinar[]>([])
+  const [pastWebinars, setPast] = useState<Webinar[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let mounted = true
+    async function load() {
+      try {
+        const res = await fetch('/api/webinars')
+        const json = await res.json()
+        if (res.ok) {
+          const data = (json.data as Webinar[]) ?? []
+          const now = new Date()
+          const upcoming = data.filter((w) => w.starts_at && new Date(w.starts_at) >= now)
+          const past = data.filter((w) => !w.starts_at || new Date(w.starts_at) < now)
+          if (mounted) {
+            setUpcoming(upcoming)
+            setPast(past)
+          }
+        } else {
+          // eslint-disable-next-line no-console
+          console.error('Failed to fetch /api/webinars', json)
+        }
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error('Error fetching /api/webinars', err)
+      }
+      if (mounted) setLoading(false)
+    }
+    load()
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  // fallback demo data when DB empty
+  const defaultUpcoming: Webinar[] = [
+    { id: '1', title: 'Stock Market Basics for Beginners', starts_at: '2026-04-15T19:00:00+05:30', duration_minutes: 90, platform: 'Zoom', price: 'Free', seats: 500 },
+    { id: '2', title: 'Candlestick Patterns That Actually Work', starts_at: '2026-04-22T19:00:00+05:30', duration_minutes: 120, platform: 'Google Meet', price: '₹299', seats: 300 },
+    { id: '3', title: 'Risk Management Strategies', starts_at: '2026-05-05T18:30:00+05:30', duration_minutes: 100, platform: 'Zoom', price: '₹499', seats: 400 },
+    { id: '4', title: 'Live Trading Session: Real Market Analysis', starts_at: '2026-05-12T09:00:00+05:30', duration_minutes: 150, platform: 'Zoom', price: '₹799', seats: 200 },
   ]
 
-  const pastWebinars = [
-    { id: 1, title: "Introduction to Options Trading", date: "January 8, 2026" },
-    { id: 2, title: "Market Psychology 101", date: "December 28, 2025" },
-    { id: 3, title: "Technical Analysis Deep Dive", date: "December 15, 2025" },
+  const defaultPast: Webinar[] = [
+    { id: 'p1', title: 'Introduction to Options Trading', starts_at: '2026-01-08T19:00:00+05:30' },
+    { id: 'p2', title: 'Market Psychology 101', starts_at: '2025-12-28T19:00:00+05:30' },
+    { id: 'p3', title: 'Technical Analysis Deep Dive', starts_at: '2025-12-15T19:00:00+05:30' },
   ]
+   console.log('Loaded webinars:', { upcomingWebinars, pastWebinars })
+  const effectiveUpcoming = upcomingWebinars.length ? upcomingWebinars : defaultUpcoming
+  const effectivePast = pastWebinars.length ? pastWebinars : defaultPast
 
   return (
     <>
@@ -86,9 +131,8 @@ export default function WebinarsPage() {
       <section className="py-28 bg-background">
         <motion.div
           variants={stagger}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
+          initial={false}
+          animate="visible"
           className="max-w-7xl mx-auto px-6"
         >
           <motion.h2
@@ -98,8 +142,19 @@ export default function WebinarsPage() {
             Upcoming Sessions
           </motion.h2>
 
+          {loading && <div>Loading webinars...</div>}
+
+          <div className="mb-6 text-sm text-muted-foreground">
+            Showing {effectiveUpcoming.length} upcoming webinar(s)
+            <ul className="mt-2">
+              {effectiveUpcoming.slice(0,5).map((w) => (
+                <li key={w.id}>{w.title}</li>
+              ))}
+            </ul>
+          </div>
+
           <div className="grid md:grid-cols-2 gap-10">
-            {upcomingWebinars.map((w) => (
+            {effectiveUpcoming.map((w) => (
               <motion.div
                 key={w.id}
                 variants={fadeUp}
@@ -116,15 +171,15 @@ export default function WebinarsPage() {
                       <Calendar className="text-accent" />
                       <div>
                         <p className="text-muted-foreground">Date</p>
-                        <p className="font-semibold">{w.date}</p>
+                        <p className="font-semibold">{w.starts_at ? formatDateTime(w.starts_at) : '-'}</p>
                       </div>
                     </div>
 
                     <div className="flex gap-3">
                       <Clock className="text-accent" />
                       <div>
-                        <p className="text-muted-foreground">Time</p>
-                        <p className="font-semibold">{w.time}</p>
+                        <p className="text-muted-foreground">Duration</p>
+                        <p className="font-semibold">{w.duration_minutes ? `${w.duration_minutes} mins` : '-'}</p>
                       </div>
                     </div>
 
@@ -140,7 +195,7 @@ export default function WebinarsPage() {
                       <Users className="text-accent" />
                       <div>
                         <p className="text-muted-foreground">Seats</p>
-                        <p className="font-semibold">{w.seats}</p>
+                        <p className="font-semibold">{w.seats ?? '-'}</p>
                       </div>
                     </div>
                   </div>
@@ -217,7 +272,7 @@ export default function WebinarsPage() {
 
                 <div className="p-8">
                   <h3 className="font-bold mb-2">{w.title}</h3>
-                  <p className="text-sm text-muted-foreground mb-6">{w.date}</p>
+                  <p className="text-sm text-muted-foreground mb-6">{w.starts_at ? formatDate(w.starts_at) : ''}</p>
 
                   <button className="w-full py-3 rounded-xl border border-primary
                     text-primary font-semibold hover:bg-primary hover:text-primary-foreground transition">

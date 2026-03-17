@@ -1,8 +1,8 @@
 // utils/requireAuth.ts
-import { User } from "firebase/auth"
+import type { User } from "@supabase/supabase-js"
 
 export const requireAuth = (
-  user: User | null,
+  user: User | null | undefined,
   router: any,
   redirect = "/signup"
 ) => {

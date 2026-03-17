@@ -1,41 +1,57 @@
 "use client"
 
-import { onAuthStateChanged, User } from "firebase/auth"
 import { createContext, useContext, useEffect, useState } from "react"
-import { auth } from "@/lib/firebase"
+import supabase from "@/lib/supabaseClient"
+import type { Session, User } from "@supabase/supabase-js"
 
 type AuthContextType = {
   user: User | null
   loading: boolean
+  session: Session | null
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
+  const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      setUser(firebaseUser)
+    let mounted = true
+
+    // get initial session
+    supabase.auth.getSession().then(({ data }) => {
+      if (!mounted) return
+      setSession(data.session ?? null)
+      setUser(data.session?.user ?? null)
       setLoading(false)
     })
 
-    return () => unsubscribe()
+    // subscribe to changes
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession ?? null)
+      setUser(newSession?.user ?? null)
+      setLoading(false)
+    })
+
+    return () => {
+      mounted = false
+      // unsubscribe listener
+      // @ts-ignore
+      listener?.subscription?.unsubscribe?.()
+    }
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ user, loading, session }}>
       {children}
     </AuthContext.Provider>
   )
 }
 
-/* ✅ THIS WAS MISSING OR WRONG */
 export function useAuth() {
   const context = useContext(AuthContext)
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider")
-  }
+  if (!context) throw new Error("useAuth must be used within an AuthProvider")
   return context
 }
