@@ -49,7 +49,12 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         {/* 🔐 AUTH PROVIDER SHOULD BE OUTERMOST */}
         <AuthProvider>
-          <ThemeProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
+          >
             <PageTransition>
               {children}
             </PageTransition>

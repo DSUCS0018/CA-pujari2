@@ -170,7 +170,7 @@ export function Navigation() {
               <ThemeToggle />
               <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="p-2 rounded-full bg-white/40 hover:bg-white/60 text-[#3E3730] transition-colors"
+                className="p-2 rounded-full bg-white/40 hover:bg-white/60 dark:bg-white/10 dark:hover:bg-white/20 text-[#3E3730] dark:text-white transition-colors"
                 aria-label="Toggle menu"
               >
                 {isOpen ? <X size={20} /> : <Menu size={20} />}
@@ -186,7 +186,7 @@ export function Navigation() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="md:hidden overflow-hidden w-full absolute top-full left-0 mt-3 bg-[#F7F2E8]/95 backdrop-blur-xl border border-[#A38970]/30 shadow-2xl rounded-3xl"
+              className="md:hidden overflow-hidden w-full absolute top-full left-0 mt-3 bg-[#F7F2E8]/95 dark:bg-[#0f0f0f]/95 backdrop-blur-xl border border-[#A38970]/30 dark:border-white/10 shadow-2xl rounded-3xl"
             >
               <div className="px-5 py-6 flex flex-col gap-2">
                 {navItems.map((item) => {
@@ -198,7 +198,7 @@ export function Navigation() {
                         router.push(item.href)
                         setIsOpen(false)
                       }}
-                      className={`flex items-center px-5 py-4 rounded-2xl text-[15px] font-semibold transition-all ${isActive ? "bg-[#D1AF62]/10 text-[#D1AF62] shadow-sm" : "text-[#3E3730] hover:bg-white/50"
+                      className={`flex items-center px-5 py-4 rounded-2xl text-[15px] font-semibold transition-all ${isActive ? "bg-[#D1AF62]/10 dark:bg-blue-600/10 text-[#D1AF62] dark:text-blue-500 shadow-sm" : "text-[#3E3730] dark:text-gray-300 hover:bg-white/50 dark:hover:bg-white/5"
                         }`}
                     >
                       {item.label}
