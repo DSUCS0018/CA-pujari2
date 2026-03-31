@@ -163,14 +163,14 @@ export default function AboutPage() {
           >
             <motion.div variants={narrativeSweepLeft}>
               <h2 className={`text-5xl font-bold mb-8 text-[var(--fin-text-primary)] ${playfair.className} leading-snug`}>
-                I Didn’t Start <br /> <span className="text-[var(--fin-accent-gold)]">as a Teacher.</span>
+                I am Shobha Pujari, <br /> <span className="text-[var(--fin-accent-gold)]">a Chartered Accountant</span>
               </h2>
               <div className="space-y-6 text-lg text-[var(--fin-text-secondary)] leading-relaxed font-light">
                 <p>
-                  I started deep inside finance — audits, numbers, risk, regulations. Fifteen years as a Chartered Accountant taught me how markets truly function underneath the noise.
+                qualified by the Institute of Chartered Accountants of India (ICAI), with 9 years of rich industry experience.I Currently serve as a Consultant at 5paisa, delivering expert financial advisory, risk management, and strategic solutions in the fintech domain.
                 </p>
                 <p>
-                  But beginners were struggling. They were given templates, not frameworks. So I shifted my focus entirely — not to predict markets, but to teach people <strong className="font-semibold text-[var(--fin-text-primary)]">how to think inside them.</strong>
+                  In 2021, I was recognised by <strong className="font-semibold text-[var(--fin-text-primary)]">the University of Southampton</strong>the University of Southampton for my  contributions to the profession. 
                 </p>
               </div>
             </motion.div>
