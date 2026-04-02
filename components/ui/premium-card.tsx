@@ -1,49 +1,29 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, useMotionValue, useTransform, useSpring } from "framer-motion"
 import { useTheme } from "@/hooks/useTheme"
-import { premiumEasing, premiumStagger, premiumFadeUp, microPop } from "@/lib/animations"
 import { Playfair_Display } from "next/font/google"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
+import { useRef, useState } from "react"
 
 const playfair = Playfair_Display({ subsets: ["latin"] })
 
-type MetaItem = {
-  icon: React.ReactNode
-  label: React.ReactNode
+const premiumEasing = [0.22, 1, 0.36, 1]
+
+const premiumFadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: premiumEasing } }
 }
 
-export type PremiumCardProps = {
-  id: string
-  title: string
-  description?: React.ReactNode
-  badgeLabel?: string
+const premiumStagger = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+}
 
-  metaItems?: MetaItem[]
-
-  price?: React.ReactNode
-  priceLabel?: string
-  
-  actionUrl?: string
-  actionLabel?: string
-  onClick?: () => void
-
-  /**
-   * For the top color bar and hover states. Defaults to "gold" (var(--fin-accent-gold)).
-   * If "silver", uses var(--fin-text-secondary).
-   */
-  accentColor?: "gold" | "silver"
-  
-  /**
-   * If you need an icon above the title (e.g. for past webinars)
-   */
-  topIcon?: React.ReactNode
-
-  /**
-   * For full-width button (like past webinars)
-   */
-  fullWidthButton?: boolean
+const microPop = {
+  hidden: { scale: 0.8, opacity: 0 },
+  visible: { scale: 1, opacity: 1, transition: { duration: 0.3, ease: premiumEasing } }
 }
 
 export function PremiumCard({
@@ -51,32 +31,75 @@ export function PremiumCard({
   title,
   description,
   badgeLabel,
-  metaItems = [],
   price,
   priceLabel,
   actionUrl = "#",
-  actionLabel = "Action",
-  onClick,
-  accentColor = "gold",
+  actionLabel = "Enroll Now",
   topIcon,
-  fullWidthButton = false
-}: PremiumCardProps) {
+  metaItems = [],
+  fullWidthButton = false,
+  footerBorderHover = "",
+  accentColor = "gold"
+}: any) {
   const { isLight } = useTheme()
-  const accentClass = accentColor === "gold" 
-    ? "group-hover:bg-[var(--fin-accent-gold)]" 
-    : "group-hover:bg-[var(--fin-text-secondary)]"
-    
-  const buttonHoverColors = accentColor === "gold"
-    ? "hover:bg-[var(--fin-accent-gold)] hover:border-[var(--fin-accent-gold)]"
-    : "hover:bg-[var(--fin-text-primary)] hover:border-[var(--fin-text-primary)]"
-  
-  const iconHoverColor = accentColor === "gold"
-    ? "text-[var(--fin-accent-gold)]"
-    : "text-[var(--fin-border-light)]"
-    
-  const footerBorderHover = accentColor === "gold"
-    ? "group-hover:border-[var(--fin-accent-gold)]/20"
-    : "group-hover:border-[var(--fin-text-secondary)]/30"
+  const ref = useRef<HTMLDivElement>(null)
+  const [isHovered, setIsHovered] = useState(false)
+
+  // Theme-aware colors
+  const cardBg = isLight
+    ? "linear-gradient(135deg, #FFFFFF 0%, #F7F2E8 100%)"
+    : "linear-gradient(135deg, #1A2847 0%, #0F172A 100%)"
+  const borderColor = isLight ? "rgba(209,175,98,0.3)" : "rgba(79,209,255,0.25)"
+  const borderHoverColor = isLight ? "rgba(209,175,98,0.8)" : "rgba(79,209,255,0.7)"
+  const accent = isLight ? "#D1AF62" : "#4FD1FF"
+  const textPrimary = isLight ? "#3E3730" : "#E0E7FF"
+  const textMuted = isLight ? "#7A6F65" : "#8899AA"
+  const glowColor = isLight
+    ? "rgba(209,175,98,0.15)"
+    : "rgba(79,209,255,0.12)"
+
+  // Raw mouse values
+  const rawX = useMotionValue(0)
+  const rawY = useMotionValue(0)
+
+  // Cursor position for glow (0–100%)
+  const glowX = useMotionValue(50)
+  const glowY = useMotionValue(50)
+
+  // Spring-smoothed tilt
+  const rotateX = useSpring(useTransform(rawY, [-120, 120], [10, -10]), {
+    stiffness: 180,
+    damping: 20
+  })
+  const rotateY = useSpring(useTransform(rawX, [-120, 120], [-10, 10]), {
+    stiffness: 180,
+    damping: 20
+  })
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = ref.current?.getBoundingClientRect()
+    if (!rect) return
+
+    const centerX = rect.left + rect.width / 2
+    const centerY = rect.top + rect.height / 2
+
+    rawX.set(e.clientX - centerX)
+    rawY.set(e.clientY - centerY)
+
+    // Glow position as percentage within card
+    glowX.set(((e.clientX - rect.left) / rect.width) * 100)
+    glowY.set(((e.clientY - rect.top) / rect.height) * 100)
+  }
+
+  const handleMouseLeave = () => {
+    rawX.set(0)
+    rawY.set(0)
+    glowX.set(50)
+    glowY.set(50)
+    setIsHovered(false)
+  }
+
+  const handleMouseEnter = () => setIsHovered(true)
 
   return (
     <motion.div
@@ -94,31 +117,31 @@ export function PremiumCard({
       }}
     >
       {/* Subtle internal atmospheric glow on hover */}
-      <div 
+      <div
         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
         style={{
-          background: isLight 
+          background: isLight
             ? 'linear-gradient(to bottom, rgba(255,255,255,0.4), transparent)'
             : 'linear-gradient(to bottom, rgba(79,209,255,0.1), transparent)'
         }}
       />
 
       {/* Clean top accent bar */}
-      <div 
+      <div
         className="h-2 w-full transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
         style={{
           backgroundColor: isLight ? '#D1AF62' : '#4FD1FF',
         }}
       />
 
-      <div 
+      <div
         className="p-8 md:p-10 flex flex-col relative z-10 transition-colors duration-500"
         style={{
           backgroundColor: 'transparent',
           color: isLight ? '#2c241f' : '#E0E7FF'
         }}
       >
-        
+
         {/* Top Icon Area */}
         {topIcon && (
           <div className="w-14 h-14 rounded-full flex items-center justify-center mb-6 shadow-sm border" style={{ backgroundColor: isLight ? '#f0ede8' : 'rgba(79,209,255,0.1)', borderColor: isLight ? 'rgba(0,0,0,0.05)' : 'rgba(79,209,255,0.2)', color: isLight ? '#D1AF62' : '#4FD1FF' }}>
@@ -128,7 +151,7 @@ export function PremiumCard({
 
         {/* BADGE TAG */}
         {badgeLabel && (
-          <motion.span 
+          <motion.span
             variants={premiumStagger}
             initial="hidden"
             whileInView="visible"
@@ -159,7 +182,7 @@ export function PremiumCard({
 
         {/* META ITEMS */}
         {metaItems.length > 0 && (
-          <motion.div 
+          <motion.div
             variants={premiumStagger}
             initial="hidden"
             whileInView="visible"
@@ -181,7 +204,7 @@ export function PremiumCard({
         )}
 
         {/* FOOTER */}
-        <motion.div 
+        <motion.div
           variants={premiumStagger}
           initial="hidden"
           whileInView="visible"
@@ -200,6 +223,7 @@ export function PremiumCard({
             </div>
           )}
 
+          {/* CTA BUTTON */}
           <Link
             href={actionUrl}
             className={`group/btn px-6 py-3 border rounded-xl font-semibold flex items-center gap-2 transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-md hover:-translate-y-1 ml-auto ${fullWidthButton ? 'w-full justify-center' : ''}`}
@@ -218,7 +242,6 @@ export function PremiumCard({
             />
           </Link>
         </motion.div>
-
       </div>
     </motion.div>
   )

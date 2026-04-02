@@ -7,23 +7,23 @@ import Link from "next/link"
 
 const IMAGES = [
   {
-    src: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=2340&auto=format&fit=crop",
+    src: "/gallery/trading1.jpeg",
     label: "Live Market Charts",
   },
   {
-    src: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=2340&auto=format&fit=crop",
+    src: "/gallery/trading2.jpeg",
     label: "Technical Analysis",
   },
   {
-    src: "https://images.unsplash.com/photo-1642543492481-44e81e3914a7?q=80&w=2340&auto=format&fit=crop",
+    src: "/gallery/trading3.jpeg",
     label: "Portfolio Management",
   },
   {
-    src: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2340&auto=format&fit=crop",
+    src: "/gallery/webinar.jpeg",
     label: "Risk Management",
   },
   {
-    src: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426&auto=format&fit=crop",
+    src: "/gallery/community.jpeg",
     label: "Trading Strategy",
   },
 ]

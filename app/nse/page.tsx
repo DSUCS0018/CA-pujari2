@@ -8,9 +8,10 @@ import { motion } from "framer-motion"
 import Image from "next/image"
 
 import { Playfair_Display } from "next/font/google"
-const playfair = Playfair_Display({ subsets: ["latin"] })
-import { premiumFadeUp, premiumStagger } from "@/lib/animations"
 import { PremiumCard } from "@/components/ui/premium-card"
+import { ChevronDown, ChevronUp, Sparkles, TrendingUp, Shield, Crown } from "lucide-react"
+
+const playfair = Playfair_Display({ subsets: ["latin"] })
 
 const nsePlans = [
   {
@@ -18,65 +19,173 @@ const nsePlans = [
     title: "Basic",
     price: "₹5,000",
     badgeLabel: "Starter / Entry-Level Access",
+    section: "foundational",
+    icon: "📈",
     description: "Ideal for beginners who want to understand the fundamentals of stock market trading and build a strong foundation.",
+    details: "Learn basics of stock market, risk management, and how to start trading with confidence.",
+    features: [
+      "Stock market fundamentals",
+      "Demat & trading account setup",
+      "Basic chart reading",
+      "Risk awareness module",
+      "Beginner trading checklist"
+    ],
+    forWhom: "Perfect for absolute beginners with zero trading experience.",
+    duration: "4 Weeks",
+    sessions: "8 Sessions"
   },
   {
     id: "standard",
     title: "Standard",
     price: "₹10,000",
     badgeLabel: "Core / Essential Tools & Guidance",
+    section: "foundational",
+    icon: "📊",
     description: "Covers essential trading strategies, tools, and practical insights to help you start trading with confidence.",
+    details: "Includes technical analysis, tools, and structured approach for consistent trading.",
+    features: [
+      "Technical analysis basics",
+      "Candlestick patterns",
+      "Support & resistance levels",
+      "Volume analysis",
+      "Live market observation"
+    ],
+    forWhom: "For those who know basics and want structured strategy.",
+    duration: "6 Weeks",
+    sessions: "12 Sessions"
   },
   {
     id: "pro",
     title: "Pro",
     price: "₹50,000",
     badgeLabel: "Advanced / In-depth Strategies",
+    section: "foundational",
+    icon: "🔥",
     description: "Designed for serious learners who want advanced strategies, deeper market understanding, and real-world applications.",
+    details: "Advanced price action, psychology, and real-world execution strategies.",
+    features: [
+      "Advanced price action",
+      "Options & derivatives intro",
+      "Trading psychology",
+      "Live trade analysis",
+      "Personal feedback sessions"
+    ],
+    forWhom: "For intermediate traders ready to go professional.",
+    duration: "8 Weeks",
+    sessions: "20 Sessions"
   },
   {
     id: "premium",
     title: "Premium",
-    price: "₹110,000",
-    badgeLabel: "✨ Most Popular • Elite",
+    price: "₹1,10,000",
+    badgeLabel: "✨ Most Popular • Elite Mentorship",
+    section: "advanced",
+    icon: "⭐",
     description: "Includes personalized mentorship, live sessions, and direct guidance to accelerate your trading journey.",
+    details: "Direct mentorship, live trading, and priority support.",
+    features: [
+      "1-on-1 mentorship sessions",
+      "Live trading with Shobha Pujari",
+      "Custom trading plan",
+      "Priority WhatsApp support",
+      "Monthly portfolio review"
+    ],
+    forWhom: "For serious traders who want personalized expert guidance.",
+    duration: "3 Months",
+    sessions: "Unlimited"
   },
   {
     id: "enterprise",
     title: "Enterprise",
-    price: "₹500,000",
+    price: "₹5,00,000",
     badgeLabel: "Professional / High-Volume Traders",
+    section: "advanced",
+    icon: "🏛️",
     description: "Built for professional traders looking for high-level strategies, capital management, and scaling techniques.",
+    details: "Portfolio scaling, capital allocation, and advanced risk systems.",
+    features: [
+      "Institutional-level strategies",
+      "Capital management system",
+      "Advanced risk frameworks",
+      "Algo trading introduction",
+      "Dedicated support manager"
+    ],
+    forWhom: "For HNIs and professional traders managing large capital.",
+    duration: "6 Months",
+    sessions: "Unlimited + Priority"
   },
   {
     id: "ultimate",
     title: "Ultimate",
-    price: "₹1,000,000",
-    badgeLabel: "Lifetime / VIP Access",
+    price: "₹10,00,000",
+    badgeLabel: "👑 Lifetime / VIP Access",
+    section: "advanced",
+    icon: "💎",
     description: "Complete lifetime access with exclusive mentorship, priority support, and elite-level trading insights.",
+    details: "All features unlocked + lifetime mentorship + VIP access.",
+    features: [
+      "Lifetime platform access",
+      "All future programs included",
+      "VIP community access",
+      "Direct CA-level consultation",
+      "Business & tax advisory"
+    ],
+    forWhom: "For those who want everything — forever.",
+    duration: "Lifetime",
+    sessions: "Unlimited Lifetime"
   }
+]
+
+const tabs = [
+  { id: "foundational", label: "Foundational & Growth", icon: <TrendingUp size={16} /> },
+  { id: "advanced", label: "Advanced & Elite", icon: <Crown size={16} /> }
+]
+
+const floatingStats = [
+  { label: "Students Trained", value: "2,000+" },
+  { label: "Success Rate", value: "94%" },
+  { label: "Years Experience", value: "10+" },
+  { label: "Live Sessions", value: "500+" }
 ]
 
 export default function NSEPage() {
   const { isLight } = useTheme()
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight
+      setScrollProgress((window.scrollY / totalHeight) * 100)
+    }
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  const handleToggle = (id: string) => {
+    setActiveCard(prev => (prev === id ? null : id))
+  }
+
+  const filteredPlans = nsePlans.filter(p => p.section === activeTab)
+
+  const bg = isLight ? "#F7F2E8" : "#0F172A"
+  const cardBg = isLight ? "#FFFFFF" : "#1A2847"
+  const text = isLight ? "#3E3730" : "#E0E7FF"
+  const accent = isLight ? "#D1AF62" : "#4FD1FF"
+  const subtle = isLight ? "#EBE5D8" : "#243456"
+
   return (
     <main
-      style={{
-        '--fin-bg-primary': isLight ? '#F7F2E8' : '#0F172A',
-        '--fin-bg-secondary': isLight ? '#EBE5D8' : '#1A2847',
-        '--fin-bg-accent': isLight ? '#DFD8CC' : '#243456',
-        '--fin-gradient-hero': isLight ? 'linear-gradient(90deg, #FBF8F2 0%, #F7F2E8 50%, #F5F0E6 100%)' : 'linear-gradient(90deg, #0F172A 0%, #1A2847 50%, #243456 100%)',
-        '--fin-text-primary': isLight ? '#3E3730' : '#E0E7FF',
-        '--fin-text-secondary': isLight ? '#645E56' : '#C7D2FE',
-        '--fin-text-light': isLight ? '#8A847C' : '#A5B4FC',
-        '--fin-accent-gold': isLight ? '#D1AF62' : '#4FD1FF',
-        '--fin-accent-soft-gold': isLight ? '#A38970' : '#3B82F6',
-        '--fin-border-light': isLight ? '#A38970' : '#4FD1FF',
-        '--fin-border-divider': isLight ? '#D6CCBE' : '#334155'
-      } as React.CSSProperties}
-      className={`${isLight ? 'bg-white text-[var(--fin-text-primary)]' : 'bg-[#0F172A] text-[#E0E7FF]'} min-h-screen transition-colors duration-500 font-sans`}
+      style={{ backgroundColor: bg, color: text } as React.CSSProperties}
+      className="min-h-screen"
     >
+      {/* SCROLL PROGRESS BAR */}
+      <div className="fixed top-0 left-0 right-0 z-[100] h-1" style={{ backgroundColor: subtle }}>
+        <motion.div
+          className="h-full"
+          style={{ width: `${scrollProgress}%`, backgroundColor: accent }}
+          transition={{ ease: "linear" }}
+        />
+      </div>
+
       <Navigation />
 
       {/* HERO — PREMIUM FINTECH REDESIGN */}
@@ -253,6 +362,7 @@ export default function NSEPage() {
               Foundational & Growth Programs
             </motion.h2>
           </div>
+        </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
             {nsePlans.slice(0, 3).map((plan) => (
@@ -370,8 +480,8 @@ export default function NSEPage() {
                 </div>
               </motion.div>
             ))}
-          </div>
-        </motion.div>
+          </motion.div>
+        </AnimatePresence>
       </section>
 
       {/* CTA */}
@@ -379,38 +489,30 @@ export default function NSEPage() {
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[var(--fin-accent-gold)]/40 to-transparent" />
 
         <motion.div
-          variants={premiumStagger}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="max-w-4xl mx-auto px-6 text-center relative z-10"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="max-w-2xl mx-auto rounded-3xl p-10"
+          style={{ backgroundColor: cardBg, border: `1px solid ${subtle}` }}
         >
-          <motion.h2
-            variants={premiumFadeUp}
-            className={`text-4xl md:text-5xl font-extrabold mb-6 text-[var(--fin-text-primary)] ${playfair.className}`}
+          <div className="text-3xl mb-3">🎯</div>
+          <h2 className={`text-3xl font-bold mb-3 ${playfair.className}`}>
+            Not sure which plan fits you?
+          </h2>
+          <p className="opacity-60 mb-8">
+            Talk to us and we'll guide you to the right program based on your goals and experience.
+          </p>
+          <motion.a
+            href="/contact"
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.97 }}
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-sm"
+            style={{ backgroundColor: accent, color: isLight ? "#fff" : "#0F172A" }}
           >
-            Not sure which plan to choose?
-          </motion.h2>
-          <motion.p
-            variants={premiumFadeUp}
-            className="text-xl text-[var(--fin-text-primary)]/80 mb-10 max-w-2xl mx-auto leading-relaxed"
-          >
-            Reach out to our team to find the perfect fit for your trading goals and experience level.
-          </motion.p>
-
-          <motion.div variants={premiumFadeUp}>
-            <Link
-              href="/contact"
-              style={{
-                backgroundColor: isLight ? '#3E3730' : '#4FD1FF',
-                color: isLight ? 'white' : '#0F172A'
-              }}
-              className="group/cta inline-flex items-center justify-center px-10 py-5 rounded-xl font-bold text-lg transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[0_20px_40px_-10px_rgba(79,209,255,0.3)] hover:-translate-y-1.5 border border-transparent relative overflow-hidden"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover/cta:translate-x-full transition-transform duration-1000 ease-in-out" />
-              <span className="relative z-10">Contact us for guidance</span>
-            </Link>
-          </motion.div>
+            <Shield size={16} />
+            Contact Us for Guidance
+          </motion.a>
         </motion.div>
       </section>
 
