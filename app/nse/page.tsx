@@ -236,7 +236,7 @@ export default function NSEPage() {
       </section>
 
       {/* PLANS GRID */}
-      <section id="plans" className="py-24 relative" style={{ backgroundColor: isLight ? '#FFFFFF' : '#0F172A' }}>
+      <section id="plans" className="py-24 relative border-b border-[var(--fin-border-divider)]" style={{ background: isLight ? 'radial-gradient(circle at 50% 40%, rgba(0,0,0,0.03), transparent 60%), linear-gradient(180deg, #f8f5f0 0%, #efe6da 100%)' : '#0F172A' }}>
         {/* SECTION 1: Foundational & Growth Programs */}
         <motion.div
           variants={premiumStagger}
@@ -256,17 +256,51 @@ export default function NSEPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
             {nsePlans.slice(0, 3).map((plan) => (
-              <PremiumCard
+              <motion.div
                 key={plan.id}
-                id={plan.id}
-                title={plan.title}
-                description={plan.description}
-                badgeLabel={plan.badgeLabel}
-                price={plan.price}
-                priceLabel="Investment"
-                actionUrl={`/contact`}
-                actionLabel="Enroll Now"
-              />
+                whileHover={{ scale: 1.04, y: -12 }}
+                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                className="group relative"
+              >
+                {/* Liquid Glass Wrapper */}
+                <div
+                  className="relative rounded-2xl border border-[#D4AF37]/40 overflow-hidden transition-all duration-500 group-hover:border-[#D4AF37]/80 group-hover:shadow-[0_20px_60px_rgba(212,175,55,0.15),inset_0_1px_0_rgba(255,255,255,0.3)]"
+                  style={{
+                    background: isLight ? 'rgba(255, 255, 255, 0.08)' : 'rgba(255, 255, 255, 0.05)',
+                    backdropFilter: 'blur(12px) saturate(180%)',
+                    WebkitBackdropFilter: 'blur(12px) saturate(180%)',
+                    boxShadow: isLight ? '0 8px 32px 0 rgba(31, 38, 135, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.3)' : '0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+                  }}
+                >
+                  {/* Subtle inner glow on hover */}
+                  <div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    style={{
+                      background: isLight ? 'radial-gradient(ellipse at top-left, rgba(212,175,55,0.1), transparent 60%)' : 'radial-gradient(ellipse at top-left, rgba(79,209,255,0.05), transparent 60%)'
+                    }}
+                  />
+
+                  {/* Light reflection streak */}
+                  <div
+                    className="absolute top-0 left-0 right-0 h-0.5 opacity-0 group-hover:opacity-50 transition-opacity duration-500"
+                    style={{
+                      background: isLight ? 'linear-gradient(90deg, transparent, #D4AF37, transparent)' : 'linear-gradient(90deg, transparent, #4FD1FF, transparent)'
+                    }}
+                  />
+
+                  <PremiumCard
+                    key={plan.id}
+                    id={plan.id}
+                    title={plan.title}
+                    description={plan.description}
+                    badgeLabel={plan.badgeLabel}
+                    price={plan.price}
+                    priceLabel="Investment"
+                    actionUrl={`/contact`}
+                    actionLabel="Enroll Now"
+                  />
+                </div>
+              </motion.div>
             ))}
           </div>
         </motion.div>
@@ -290,17 +324,51 @@ export default function NSEPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
             {nsePlans.slice(3, 6).map((plan) => (
-              <PremiumCard
+              <motion.div
                 key={plan.id}
-                id={plan.id}
-                title={plan.title}
-                description={plan.description}
-                badgeLabel={plan.badgeLabel}
-                price={plan.price}
-                priceLabel="Investment"
-                actionUrl={`/contact`}
-                actionLabel="Enroll Now"
-              />
+                whileHover={{ scale: 1.04, y: -12 }}
+                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                className="group relative"
+              >
+                {/* Liquid Glass Wrapper */}
+                <div
+                  className="relative rounded-2xl border border-[#D4AF37]/40 overflow-hidden transition-all duration-500 group-hover:border-[#D4AF37]/80 group-hover:shadow-[0_20px_60px_rgba(212,175,55,0.15),inset_0_1px_0_rgba(255,255,255,0.3)]"
+                  style={{
+                    background: isLight ? 'rgba(255, 255, 255, 0.08)' : 'rgba(255, 255, 255, 0.05)',
+                    backdropFilter: 'blur(12px) saturate(180%)',
+                    WebkitBackdropFilter: 'blur(12px) saturate(180%)',
+                    boxShadow: isLight ? '0 8px 32px 0 rgba(31, 38, 135, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.3)' : '0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+                  }}
+                >
+                  {/* Subtle inner glow on hover */}
+                  <div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    style={{
+                      background: isLight ? 'radial-gradient(ellipse at top-left, rgba(212,175,55,0.1), transparent 60%)' : 'radial-gradient(ellipse at top-left, rgba(79,209,255,0.05), transparent 60%)'
+                    }}
+                  />
+
+                  {/* Light reflection streak */}
+                  <div
+                    className="absolute top-0 left-0 right-0 h-0.5 opacity-0 group-hover:opacity-50 transition-opacity duration-500"
+                    style={{
+                      background: isLight ? 'linear-gradient(90deg, transparent, #D4AF37, transparent)' : 'linear-gradient(90deg, transparent, #4FD1FF, transparent)'
+                    }}
+                  />
+
+                  <PremiumCard
+                    key={plan.id}
+                    id={plan.id}
+                    title={plan.title}
+                    description={plan.description}
+                    badgeLabel={plan.badgeLabel}
+                    price={plan.price}
+                    priceLabel="Investment"
+                    actionUrl={`/contact`}
+                    actionLabel="Enroll Now"
+                  />
+                </div>
+              </motion.div>
             ))}
           </div>
         </motion.div>
