@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, useCallback } from "react"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { useTheme } from "@/hooks/useTheme"
@@ -20,8 +20,12 @@ export default function Home() {
   // Scroll sequence state
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const heroRef = useRef<HTMLDivElement>(null)
-  const imagesRef = useRef<HTMLImageElement[]>([])
-  const [imagesLoaded, setImagesLoaded] = useState(false)
+  const lightImagesRef = useRef<HTMLImageElement[]>([])
+  const darkImagesRef = useRef<HTMLImageElement[]>([])
+  const [isLightLoaded, setIsLightLoaded] = useState(false)
+  const [isDarkLoaded, setIsDarkLoaded] = useState(false)
+  const [canvasOpacity, setCanvasOpacity] = useState(0)  // For fade-in on load
+  const [scrollIndicatorVisible, setScrollIndicatorVisible] = useState(true) // For scroll hint
 
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -30,13 +34,25 @@ export default function Home() {
 
   // Smooth out mouse wheel jerky scroll steps
   const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 200,
-    damping: 40,
+    stiffness: 100, // Balanced stiffness for smoother response
+    damping: 30,    // Optimized damping to reduce "wiggle" and improve speed
     restDelta: 0.001
   })
 
-  // Map 0 -> 1 progress to frame index 1 -> FRAME_COUNT
-  const currentIndex = useTransform(smoothProgress, [0, 1], [1, FRAME_COUNT])
+  const darkFrameCount = 89
+  const lightFrameCount = 90
+
+  // Track scroll progress for the progress bar & scroll indicator
+  const progressBarValue = useTransform(smoothProgress, [0, 1], ["0%", "100%"])
+
+  // Hide scroll indicator after user starts scrolling
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    if (latest > 0.02) setScrollIndicatorVisible(false)
+    else setScrollIndicatorVisible(true)
+  })
+
+  // Map 0 -> 1 progress to frame index 1 -> max available for current theme
+  const currentIndex = useTransform(smoothProgress, [0, 1], [1, isLight ? lightFrameCount : darkFrameCount])
 
   useEffect(() => {
     // 1. Text cycle
@@ -45,25 +61,48 @@ export default function Home() {
     }, 1800)
 
     // 2. Preload images
-    const loadImages = () => {
+    const loadImages = (isDarkMode: boolean) => {
+      const frames = isDarkMode ? 89 : 90
       const loadedImages: HTMLImageElement[] = []
       let loadedCount = 0
 
-      for (let i = 1; i <= FRAME_COUNT; i++) {
+      console.log(`[Hero] Starting preload for ${isDarkMode ? 'DARK' : 'LIGHT'} sequence (${frames} frames)...`)
+
+      for (let i = 1; i <= frames; i++) {
         const img = new Image()
-        const paddedIndex = i.toString().padStart(3, '0')
-        img.src = `/frame/ezgif-frame-${paddedIndex}.png`
+        
+        if (isDarkMode) {
+          // home_Dark frames are 013 to 101
+          const darkPadded = (i + 12).toString().padStart(3, '0')
+          img.src = `/home_Dark/Recording_2026-04-02_024054_${darkPadded}.png`
+        } else {
+          // home_Light frames are 016 to 105 (timestamp 235740)
+          const lightPadded = (i + 15).toString().padStart(3, '0')
+          img.src = `/home_Light/Recording_2026-04-02_235740_${lightPadded}.png`
+        }
         
         img.onload = () => {
-          // Tell browser to decode it off main thread immediately
           if (img.decode) {
              img.decode().catch(() => {})
           }
           loadedCount++
-          if (loadedCount === FRAME_COUNT) {
-            setImagesLoaded(true)
-            // Draw first frame
-            if (canvasRef.current && loadedImages[0]) {
+          if (loadedCount === frames) {
+            console.log(`[Hero] Finished preloading ${isDarkMode ? 'DARK' : 'LIGHT'} sequence.`)
+            if (isDarkMode) {
+              darkImagesRef.current = loadedImages
+              setIsDarkLoaded(true)
+            } else {
+              lightImagesRef.current = loadedImages
+              setIsLightLoaded(true)
+            }
+            // Trigger canvas fade-in
+            setCanvasOpacity(1)
+            
+            // Draw initial frame if this matches current theme
+            // Fixed logic: if current mode matches the theme of these images
+            const currentIsLight = document.documentElement.classList.contains('light') || !document.documentElement.classList.contains('dark')
+            if (canvasRef.current && loadedImages[0] && (isDarkMode !== currentIsLight)) {
+              console.log(`[Hero] Drawing initial frame for ${isDarkMode ? 'DARK' : 'LIGHT'} mode.`)
               canvasRef.current.width = loadedImages[0].width
               canvasRef.current.height = loadedImages[0].height
               const ctx = canvasRef.current.getContext('2d')
@@ -73,17 +112,53 @@ export default function Home() {
         }
         loadedImages.push(img)
       }
-      imagesRef.current = loadedImages
     }
-    loadImages()
+    
+    loadImages(false) // Load light
+    loadImages(true)  // Load dark
 
     return () => clearInterval(interval)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Add redraw effect on theme change
+  useEffect(() => {
+    const imagesLoaded = isLight ? isLightLoaded : isDarkLoaded
+    console.log(`[Hero] Redraw check. isLight: ${isLight}, imagesLoaded: ${imagesLoaded}`)
+    
+    if (!imagesLoaded || !canvasRef.current) return
+    const activeImages = isLight ? lightImagesRef.current : darkImagesRef.current
+    if (activeImages.length === 0) {
+      console.warn(`[Hero] Active images (${isLight ? 'LIGHT' : 'DARK'}) not yet available.`)
+      return
+    }
+
+    const latestVal = currentIndex.get()
+    const frameNumber = Math.min(activeImages.length - 1, Math.max(0, Math.floor(latestVal) - 1))
+    const img = activeImages[frameNumber]
+    
+    console.log(`[Hero] Redrawing frame ${frameNumber} for ${isLight ? 'LIGHT' : 'DARK'} mode.`)
+    if (img) {
+      const ctx = canvasRef.current.getContext('2d')
+      if (ctx) {
+        // Ensure width/height are set if they haven't been
+        if (canvasRef.current.width !== img.width) canvasRef.current.width = img.width
+        if (canvasRef.current.height !== img.height) canvasRef.current.height = img.height
+        ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
+        ctx.drawImage(img, 0, 0)
+      }
+    }
+  }, [isLight, isLightLoaded, isDarkLoaded])
+
   useMotionValueEvent(currentIndex, "change", (latest) => {
-    if (!imagesLoaded || !canvasRef.current || imagesRef.current.length === 0) return
-    const frameNumber = Math.min(FRAME_COUNT - 1, Math.max(0, Math.floor(latest) - 1))
-    const img = imagesRef.current[frameNumber]
+    const imagesLoaded = isLight ? isLightLoaded : isDarkLoaded
+    if (!imagesLoaded || !canvasRef.current) return
+    
+    const activeImages = isLight ? lightImagesRef.current : darkImagesRef.current
+    if (activeImages.length === 0) return
+
+    const frameNumber = Math.min(activeImages.length - 1, Math.max(0, Math.floor(latest) - 1))
+    const img = activeImages[frameNumber]
+    
     if (img) {
       const ctx = canvasRef.current.getContext('2d')
       if (ctx) {
@@ -97,16 +172,78 @@ export default function Home() {
       <Navigation />
 
       {/* HERO — SEQUENCE ANIMATION */}
-      <section ref={heroRef} className={`relative h-[400vh] ${isLight ? "bg-[#F7F2E8]" : "bg-[#0F172A]"}`}>
-        <div className="sticky top-0 h-[100vh] overflow-hidden flex items-center justify-center">
+      <section ref={heroRef} className={`relative h-[350vh] ${isLight ? "bg-[#F7F2E8]" : "bg-[#0F172A]"}`}>
+        <div className="sticky top-0 h-[100svh] overflow-hidden flex items-center justify-center">
+
+          {/* Shimmer Placeholder — visible while images load */}
+          {!isLightLoaded && !isDarkLoaded && (
+            <div
+              className="absolute inset-0 z-10"
+              style={{
+                backgroundImage: isLight
+                  ? 'linear-gradient(110deg, #F7F2E8 30%, #EDE5D0 50%, #F7F2E8 70%)'
+                  : 'linear-gradient(110deg, #0F172A 30%, #1E293B 50%, #0F172A 70%)',
+                backgroundSize: '200% 100%',
+                animation: 'shimmer 1.8s infinite linear',
+              }}
+            />
+          )}
+
+          {/* Canvas — fades in when loaded */}
           <canvas
             ref={canvasRef}
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full"
+            style={{
+              willChange: "transform",
+              objectFit: "cover",
+              objectPosition: "center",
+              opacity: canvasOpacity,
+              transition: "opacity 0.8s ease",
+            }}
           />
 
-          {/* Just the canvas, no text overlay as requested */}
+          {/* Scroll Progress Bar */}
+          <div className="absolute top-0 left-0 right-0 h-[3px] z-20" style={{ backgroundColor: isLight ? 'rgba(163,137,112,0.15)' : 'rgba(79,209,255,0.15)' }}>
+            <motion.div
+              className="h-full origin-left"
+              style={{
+                width: progressBarValue,
+                background: isLight
+                  ? 'linear-gradient(90deg, #D1AF62, #A38970)'
+                  : 'linear-gradient(90deg, #4FD1FF, #818CF8)',
+                boxShadow: isLight ? '0 0 8px rgba(209,175,98,0.6)' : '0 0 8px rgba(79,209,255,0.6)',
+              }}
+            />
+          </div>
+
+          {/* Scroll Indicator */}
+          <motion.div
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 pointer-events-none"
+            animate={{ opacity: scrollIndicatorVisible ? 1 : 0, y: scrollIndicatorVisible ? 0 : 10 }}
+            transition={{ duration: 0.4 }}
+          >
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase" style={{ color: isLight ? '#A38970' : '#4FD1FF' }}>Scroll to explore</span>
+            <motion.div
+              animate={{ y: [0, 6, 0] }}
+              transition={{ repeat: Infinity, duration: 1.4, ease: "easeInOut" }}
+              style={{ color: isLight ? '#D1AF62' : '#4FD1FF' }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </motion.div>
+          </motion.div>
+
         </div>
       </section>
+
+      {/* Shimmer keyframe animation */}
+      <style>{`
+        @keyframes shimmer {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+      `}</style>
 
       {/* BENTO SCROLL GALLERY */}
       <BentoGallery />
