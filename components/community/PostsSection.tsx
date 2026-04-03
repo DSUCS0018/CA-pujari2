@@ -4,15 +4,24 @@ import { motion } from "framer-motion";
 import { useTheme } from "@/hooks/useTheme";
 
 const posts = [
-  { author: "Alex Chen",      avatar: "AC", role: "Pro Trader",     time: "2h ago",
+  { author: "Rakshith",      avatar: "R", role: "Pro Trader",     time: "1h ago",
     content: "Just closed a 3:1 risk/reward trade on BTC. The key was waiting for the liquidity sweep at the 4H demand zone before entering. Patience pays! 🎯",
     tags: ["BTC", "Crypto", "RiskManagement"], likes: 284, replies: 47 },
-  { author: "Sarah Williams", avatar: "SW", role: "Forex Analyst",  time: "5h ago",
+  { author: "Priya Sharma", avatar: "PS", role: "Forex Analyst",  time: "5h ago",
     content: "EUR/USD weekly outlook: watching the 1.0850 confluence zone. Strong rejection candle forming on the daily — could see a push back to 1.0920 if bulls hold.",
     tags: ["Forex", "EURUSD", "TechnicalAnalysis"], likes: 196, replies: 32 },
-  { author: "Marcus Davis",   avatar: "MD", role: "Quant Trader",   time: "1d ago",
+  { author: "Arjun Mehta",   avatar: "AM", role: "Quant Trader",   time: "1d ago",
     content: "Backtest results for my new momentum strategy: 68% win rate across 5 years of SPX data. Sharing the full breakdown in the Education channel. Check it out!",
     tags: ["Quant", "SPX", "Momentum", "Strategy"], likes: 412, replies: 88 },
+  { author: "Sneha Reddy",   avatar: "SR", role: "Options Trader",   time: "3h ago",
+    content: "Nifty 50 options strategy working perfectly! Sold put spreads at 21,800 strike with 85% probability. Risk defined, premium collected. This is how you build consistent income! 💰",
+    tags: ["Nifty50", "Options", "IndianMarkets"], likes: 325, replies: 61 },
+  { author: "Vikram Singh",   avatar: "VS", role: "Swing Trader",   time: "7h ago",
+    content: "Bank Nifty showing strong bullish divergence on RSI. Entry taken at 45,200 with targets at 46,500. Stop loss tight at 44,800. Let's see how this plays out! 📈",
+    tags: ["BankNifty", "SwingTrading", "TechnicalAnalysis"], likes: 218, replies: 39 },
+  { author: "Kavita Patel",   avatar: "KP", role: "Intraday Expert",   time: "12h ago",
+    content: "Had an amazing day scalping USDINR! Made 15 trades with 80% accuracy. The key is to follow your rules and cut losses quickly. Discipline over everything! 🔥",
+    tags: ["USDINR", "Scalping", "IntradayTrading"], likes: 467, replies: 92 },
 ];
 
 // Keep original avatar gradients — they're decorative and look great on both themes
@@ -20,6 +29,9 @@ const avatarGrads = [
   "linear-gradient(135deg, #4FD1FF, #3B82F6)",
   "linear-gradient(135deg, #3B82F6, #8B5CF6)",
   "linear-gradient(135deg, #8B5CF6, #4FD1FF)",
+  "linear-gradient(135deg, #FF6B9D, #C084FC)",
+  "linear-gradient(135deg, #34D399, #3B82F6)",
+  "linear-gradient(135deg, #FBBF24, #F59E0B)",
 ];
 
 export default function PostsSection() {

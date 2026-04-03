@@ -141,7 +141,7 @@ export default function ContactPage() {
                 fontFamily: playfair.style.fontFamily,
                 color: isLight
                   ? "rgba(100, 65, 8, 0.10)"
-                  : "rgba(255, 210, 100, 0.07)",
+                  : "rgba(255, 210, 100, 0.20)",
               }}
             >
               CONTACT
@@ -219,7 +219,7 @@ export default function ContactPage() {
               <div className="space-y-3 sm:space-y-4">
                 {[
                   { icon: Mail,   title: "Email us",     value: "admin@cashobha.in" },
-                  { icon: Phone,  title: "Call us",      value: "+91 98765 43210" },
+                  { icon: Phone,  title: "Call us",      value: "+91 9845346813" },
                   { icon: MapPin, title: "Our location", value: "Mumbai, India" },
                 ].map((item, i) => {
                   const Icon = item.icon

@@ -55,8 +55,8 @@ export default function CoursesPage() {
       const W      = canvas.width
       const H      = canvas.height
       const cx     = W / 2
-      // sphere sits in upper area — center at ~36% height
-      const cy     = H * 0.36
+      // sphere sits in lower-middle area — center at ~65% height for maximum scroll depth
+      const cy     = H * 0.65
       const radius = Math.min(W, H) * 0.19
 
       ctx.clearRect(0, 0, W, H)
@@ -249,12 +249,14 @@ export default function CoursesPage() {
 
       {/* ── Floating Icons ── */}
       {[
-        { Icon: TrendingUp,       top: "14%", left: "22%",  delay: 0.4,  dur: 3.2, label: "Growth"      },
-        { Icon: CandlestickChart, top: "10%", left: "62%",  delay: 0.7,  dur: 2.8, label: "Candles"     },
-        { Icon: Briefcase,        top: "30%", left: "12%",  delay: 1.0,  dur: 3.6, label: "Briefcase"   },
-        { Icon: IndianRupee,      top: "28%", left: "78%",  delay: 0.5,  dur: 3.0, label: "Rupee"       },
-        { Icon: Lightbulb,        top: "48%", left: "20%",  delay: 0.9,  dur: 2.6, label: "Idea"        },
-        { Icon: BarChart2,        top: "46%", left: "72%",  delay: 0.6,  dur: 3.4, label: "Graph"       },
+        { Icon: TrendingUp,       top: "28%", left: "18%",  delay: 0.4,  dur: 3.2, label: "Growth"      },
+        { Icon: CandlestickChart, top: "25%", left: "68%",  delay: 0.7,  dur: 2.8, label: "Candles"     },
+        { Icon: Briefcase,        top: "42%", left: "12%",  delay: 1.0,  dur: 3.6, label: "Briefcase"   },
+        { Icon: IndianRupee,      top: "40%", left: "82%",  delay: 0.5,  dur: 3.0, label: "Rupee"       },
+        { Icon: Lightbulb,        top: "58%", left: "15%",  delay: 0.9,  dur: 2.6, label: "Idea"        },
+        { Icon: BarChart2,        top: "60%", left: "78%",  delay: 0.6,  dur: 3.4, label: "Graph"       },
+        { Icon: TrendingUp,       top: "75%", left: "22%",  delay: 0.8,  dur: 3.0, label: "Trending"    },
+        { Icon: Briefcase,        top: "78%", left: "72%",  delay: 1.1,  dur: 2.9, label: "Portfolio"   },
       ].map(({ Icon, top, left, delay, dur, label }, i) => (
         <motion.div
           key={label}
@@ -319,9 +321,9 @@ export default function CoursesPage() {
         </motion.div>
       ))}
 
-      {/* Text — sits below the sphere (~65% down) */}
+      {/* Text — sits below the sphere (~88% down) */}
       <div className="absolute inset-x-0 z-10 flex flex-col items-center pointer-events-none"
-        style={{ top: "62%" }}>
+        style={{ top: "88%" }}>
 
         <motion.p
           initial={{ opacity: 0, y: 14 }}
@@ -330,8 +332,8 @@ export default function CoursesPage() {
           style={{
             letterSpacing: "0.52em",
             fontSize: "clamp(0.75rem, 1.8vw, 1.1rem)",
-            fontWeight: 300,
-            color: isLight ? "rgba(60,30,5,0.82)" : "rgba(215,228,255,0.88)",
+            fontWeight: 600,
+            color: isLight ? "rgba(90,50,8,0.95)" : "rgba(215,228,255,0.88)",
             textTransform: "uppercase",
             paddingLeft: "0.52em",
             marginBottom: "0.55rem",
@@ -362,8 +364,8 @@ export default function CoursesPage() {
           style={{
             letterSpacing: "0.26em",
             fontSize: "clamp(0.48rem, 1vw, 0.65rem)",
-            fontWeight: 400,
-            color: isLight ? "rgba(90,50,8,0.38)" : "rgba(155,178,220,0.35)",
+            fontWeight: 500,
+            color: isLight ? "rgba(90,50,8,0.65)" : "rgba(155,178,220,0.35)",
             textTransform: "uppercase",
             paddingLeft: "0.26em",
           }}

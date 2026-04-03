@@ -123,7 +123,7 @@ export default function AboutPage() {
           {/* Name */}
           <motion.h1
             variants={cinematicReveal}
-            className={`text-6xl md:text-8xl font-extrabold tracking-tight text-[var(--fin-text-primary)] ${playfair.className} leading-tight drop-shadow-sm`}
+            className={`text-4xl md:text-6xl lg:text-8xl font-extrabold tracking-tight text-[var(--fin-text-primary)] ${playfair.className} leading-tight drop-shadow-sm px-4`}
           >
             Shobha Pujari
           </motion.h1>
@@ -131,7 +131,7 @@ export default function AboutPage() {
           {/* Tagline */}
           <motion.p
             variants={cinematicReveal}
-            className="mt-6 text-xl md:text-2xl max-w-2xl mx-auto text-[var(--fin-text-secondary)] leading-relaxed font-light"
+            className="mt-6 text-base md:text-xl lg:text-2xl max-w-2xl mx-auto text-[var(--fin-text-secondary)] leading-relaxed font-light px-4"
           >
             Making trading understandable, practical, and human across every phase of your financial journey.
           </motion.p>
@@ -154,8 +154,8 @@ export default function AboutPage() {
       </section>
 
       {/* STORY SECTION – NARRATIVE OVERLAP */}
-      <section ref={storyRef} className="py-32 bg-[var(--fin-bg-primary)] overflow-hidden">
-        <div className="max-w-6xl mx-auto px-6 grid lg:grid-cols-12 gap-16 lg:gap-8 items-center">
+      <section ref={storyRef} className="py-16 md:py-24 lg:py-32 bg-[var(--fin-bg-primary)] overflow-hidden">
+        <div className="max-w-6xl mx-auto px-4 md:px-6 grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16 lg:gap-8 items-center">
           
           <motion.div 
             initial="hidden"
@@ -164,10 +164,10 @@ export default function AboutPage() {
             className="lg:col-span-5 relative z-20"
           >
             <motion.div variants={narrativeSweepLeft}>
-              <h2 className={`text-5xl font-bold mb-8 text-[var(--fin-text-primary)] ${playfair.className} leading-snug`}>
+              <h2 className={`text-3xl md:text-4xl lg:text-5xl font-bold mb-6 md:mb-8 text-[var(--fin-text-primary)] ${playfair.className} leading-snug`}>
                 I am Shobha Pujari, <br /> <span className="text-[var(--fin-accent-gold)]">a Chartered Accountant</span>
               </h2>
-              <div className="space-y-6 text-lg text-[var(--fin-text-secondary)] leading-relaxed font-light">
+              <div className="space-y-4 md:space-y-6 text-base md:text-lg text-[var(--fin-text-secondary)] leading-relaxed font-light">
                 <p>
                 qualified by the Institute of Chartered Accountants of India (ICAI), with 9 years of rich industry experience.I Currently serve as a Consultant at 5paisa, delivering expert financial advisory, risk management, and strategic solutions in the fintech domain.
                 </p>
@@ -182,7 +182,7 @@ export default function AboutPage() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-50px" }}
-            className="lg:col-span-7 relative h-[600px] rounded-3xl overflow-hidden group shadow-[0_40px_80px_-20px_rgba(62,55,48,0.15)] bg-[var(--fin-bg-secondary)] border border-[var(--fin-border-light)]"
+            className="lg:col-span-7 relative h-[400px] md:h-[500px] lg:h-[600px] rounded-2xl md:rounded-3xl overflow-hidden group shadow-[0_40px_80px_-20px_rgba(62,55,48,0.15)] bg-[var(--fin-bg-secondary)] border border-[var(--fin-border-light)]"
           >
             <motion.div variants={narrativeSweepRight} className="absolute inset-0 w-full h-full">
               {/* Subtle internal gold glowing mask */}
@@ -203,24 +203,24 @@ export default function AboutPage() {
       </section>
 
       {/* CREDENTIALS – HIGH IMPACT POP-INS */}
-      <section className="py-32 bg-[var(--fin-bg-secondary)] relative">
+      <section className="py-16 md:py-24 lg:py-32 bg-[var(--fin-bg-secondary)] relative">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[var(--fin-accent-gold)]/20 to-transparent" />
-        
+
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={cinematicStagger}
-          className="max-w-6xl mx-auto px-6"
+          className="max-w-6xl mx-auto px-4 md:px-6"
         >
           <motion.h2
             variants={cinematicReveal}
-            className={`text-4xl md:text-5xl font-bold text-center mb-20 text-[var(--fin-text-primary)] ${playfair.className}`}
+            className={`text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-12 md:mb-16 lg:mb-20 text-[var(--fin-text-primary)] ${playfair.className}`}
           >
             Built on Real Credibility
           </motion.h2>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
             {[
               { stat: "CA", label: "Chartered Accountant" },
               { stat: "Certified", label: "Trading Professional" },
@@ -232,15 +232,15 @@ export default function AboutPage() {
                 variants={microPop}
                 whileHover={{ y: -6, scale: 1.02 }}
                 transition={{ duration: 0.4, ease: premiumEasing }}
-                className="group rounded-2xl bg-[var(--fin-bg-primary)] p-8 text-center border border-[var(--fin-border-light)] hover:border-[var(--fin-accent-gold)]/50 transition-colors duration-500 shadow-sm hover:shadow-xl relative overflow-hidden"
+                className="group rounded-xl md:rounded-2xl bg-[var(--fin-bg-primary)] p-4 md:p-6 lg:p-8 text-center border border-[var(--fin-border-light)] hover:border-[var(--fin-accent-gold)]/50 transition-colors duration-500 shadow-sm hover:shadow-xl relative overflow-hidden"
               >
                 {/* Micro Hover Glow */}
                 <div className="absolute inset-0 bg-[var(--fin-accent-gold)]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                
-                <h3 className={`text-4xl font-black text-[var(--fin-text-primary)] mb-4 ${playfair.className} group-hover:text-[var(--fin-accent-gold)] transition-colors duration-500`}>
+
+                <h3 className={`text-2xl md:text-3xl lg:text-4xl font-black text-[var(--fin-text-primary)] mb-2 md:mb-3 lg:mb-4 ${playfair.className} group-hover:text-[var(--fin-accent-gold)] transition-colors duration-500`}>
                   {item.stat}
                 </h3>
-                <p className="font-medium text-[var(--fin-text-secondary)] tracking-wide">{item.label}</p>
+                <p className="font-medium text-xs md:text-sm text-[var(--fin-text-secondary)] tracking-wide">{item.label}</p>
               </motion.div>
             ))}
           </div>
@@ -248,22 +248,22 @@ export default function AboutPage() {
       </section>
 
       {/* TEACHING STYLE – ALTERNATING NARRATIVE (NOT GRID) */}
-      <section className="py-32 bg-[var(--fin-bg-primary)] border-t border-[var(--fin-border-light)]">
-        <div className="max-w-5xl mx-auto px-6">
+      <section className="py-16 md:py-24 lg:py-32 bg-[var(--fin-bg-primary)] border-t border-[var(--fin-border-light)]">
+        <div className="max-w-5xl mx-auto px-4 md:px-6">
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
             variants={cinematicReveal}
-            className="text-center mb-20"
+            className="text-center mb-12 md:mb-16 lg:mb-20"
           >
-            <h2 className={`text-4xl md:text-5xl font-bold text-[var(--fin-text-primary)] ${playfair.className}`}>
+            <h2 className={`text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--fin-text-primary)] ${playfair.className}`}>
               How I Teach Differently
             </h2>
           </motion.div>
 
           {/* Sequential Alternating Flow */}
-          <div className="space-y-24">
+          <div className="space-y-12 md:space-y-16 lg:space-y-24">
             {[
               {
                 icon: Lightbulb,
@@ -293,19 +293,19 @@ export default function AboutPage() {
                   whileInView="visible"
                   viewport={{ once: true, margin: "-150px" }}
                   variants={isLeft ? narrativeSweepLeft : narrativeSweepRight}
-                  className={`flex flex-col md:flex-row items-center gap-10 md:gap-16 ${isLeft ? '' : 'md:flex-row-reverse'}`}
+                  className={`flex flex-col md:flex-row items-center gap-6 md:gap-10 lg:gap-16 ${isLeft ? '' : 'md:flex-row-reverse'}`}
                 >
                   {/* Icon Block */}
                   <div className="shrink-0 group">
-                    <div className="w-24 h-24 rounded-full bg-[var(--fin-bg-secondary)] border border-[var(--fin-border-divider)] flex items-center justify-center transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110 group-hover:bg-[var(--fin-bg-primary)] shadow-sm">
-                      <Icon className="text-[var(--fin-accent-gold)] transition-transform duration-500 group-hover:rotate-12" size={36} />
+                    <div className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full bg-[var(--fin-bg-secondary)] border border-[var(--fin-border-divider)] flex items-center justify-center transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110 group-hover:bg-[var(--fin-bg-primary)] shadow-sm">
+                      <Icon className="text-[var(--fin-accent-gold)] transition-transform duration-500 group-hover:rotate-12" size={28} />
                     </div>
                   </div>
-                  
+
                   {/* Text Block */}
                   <div className={`flex-1 ${isLeft ? 'md:text-left' : 'md:text-right'} text-center md:text-left`}>
-                    <h3 className={`text-3xl font-bold mb-4 text-[var(--fin-text-primary)] ${playfair.className}`}>{item.title}</h3>
-                    <p className="text-xl text-[var(--fin-text-secondary)] font-light leading-relaxed">
+                    <h3 className={`text-2xl md:text-3xl font-bold mb-3 md:mb-4 text-[var(--fin-text-primary)] ${playfair.className}`}>{item.title}</h3>
+                    <p className="text-base md:text-lg lg:text-xl text-[var(--fin-text-secondary)] font-light leading-relaxed">
                       {item.text}
                     </p>
                   </div>
@@ -317,17 +317,17 @@ export default function AboutPage() {
       </section>
 
       {/* TRUST – CINEMATIC LIST REVEAL */}
-      <section className="py-32 bg-[var(--fin-bg-secondary)] relative border-t border-[var(--fin-border-divider)]">
+      <section className="py-16 md:py-24 lg:py-32 bg-[var(--fin-bg-secondary)] relative border-t border-[var(--fin-border-divider)]">
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={cinematicStagger}
-          className="max-w-4xl mx-auto px-6 text-center"
+          className="max-w-4xl mx-auto px-4 md:px-6 text-center"
         >
           <motion.h2
             variants={cinematicReveal}
-            className={`text-4xl md:text-5xl font-bold mb-16 text-[var(--fin-text-primary)] ${playfair.className}`}
+            className={`text-3xl md:text-4xl lg:text-5xl font-bold mb-10 md:mb-12 lg:mb-16 text-[var(--fin-text-primary)] ${playfair.className}`}
           >
             Why Beginners Stay
           </motion.h2>
@@ -343,7 +343,7 @@ export default function AboutPage() {
               <motion.div
                 key={i}
                 variants={microPop}
-                className="group relative w-full max-w-2xl bg-[var(--fin-bg-primary)] rounded-xl p-6 text-lg font-medium text-[var(--fin-text-primary)] border border-[var(--fin-border-light)] shadow-sm overflow-hidden"
+                className="group relative w-full max-w-2xl bg-[var(--fin-bg-primary)] rounded-lg md:rounded-xl p-4 md:p-6 text-sm md:text-base lg:text-lg font-medium text-[var(--fin-text-primary)] border border-[var(--fin-border-light)] shadow-sm overflow-hidden"
               >
                 {/* Reveal line */}
                 <div className="absolute left-0 bottom-0 top-0 w-1 bg-[var(--fin-accent-gold)] scale-y-0 group-hover:scale-y-100 transition-transform duration-400 origin-bottom" />

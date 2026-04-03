@@ -82,7 +82,11 @@ export function Navigation() {
       return (
         <button
           onClick={() => router.push('/login')}
-          className="group relative flex items-center justify-center gap-2 px-6 py-2 text-[14px] font-bold rounded-full bg-gradient-to-b from-[#D1AF62] to-[#b69650] text-white hover:from-[#DAC07A] hover:to-[#c6a358] border border-[#E9D59E]/30 shadow-[0_4px_12px_rgba(209,175,98,0.35)] hover:shadow-[0_8px_22px_rgba(209,175,98,0.5)] hover:-translate-y-[2px] active:translate-y-0 active:scale-[0.98] active:shadow-[0_2px_8px_rgba(209,175,98,0.35)] transition-all duration-300 ease-out overflow-hidden"
+          className={`group relative flex items-center justify-center gap-2 px-6 py-2 text-[14px] font-bold rounded-full border transition-all duration-300 ease-out overflow-hidden hover:-translate-y-[2px] active:translate-y-0 active:scale-[0.98] ${
+            isLight
+              ? 'bg-gradient-to-b from-[#D1AF62] to-[#b69650] text-white hover:from-[#DAC07A] hover:to-[#c6a358] border-[#E9D59E]/30 shadow-[0_4px_12px_rgba(209,175,98,0.35)] hover:shadow-[0_8px_22px_rgba(209,175,98,0.5)] active:shadow-[0_2px_8px_rgba(209,175,98,0.35)]'
+              : 'bg-gradient-to-b from-[#4FD1FF] to-[#3B82F6] text-white hover:from-[#60D9FF] hover:to-[#4F92FF] border-[#4FD1FF]/30 shadow-[0_4px_12px_rgba(79,209,255,0.35)] hover:shadow-[0_8px_22px_rgba(79,209,255,0.5)] active:shadow-[0_2px_8px_rgba(79,209,255,0.35)]'
+          }`}
         >
           {/* Subtle shine effect on hover */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-[800ms] ease-in-out skew-x-12" />

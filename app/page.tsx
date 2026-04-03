@@ -218,17 +218,17 @@ export default function Home() {
 
           {/* Scroll Indicator */}
           <motion.div
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 pointer-events-none"
+            className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 pointer-events-none"
             animate={{ opacity: scrollIndicatorVisible ? 1 : 0, y: scrollIndicatorVisible ? 0 : 10 }}
             transition={{ duration: 0.4 }}
           >
-            <span className="text-xs font-semibold tracking-[0.2em] uppercase" style={{ color: isLight ? '#A38970' : '#4FD1FF' }}>Scroll to explore</span>
+            <span className="text-[10px] md:text-xs font-semibold tracking-[0.15em] md:tracking-[0.2em] uppercase" style={{ color: isLight ? '#A38970' : '#4FD1FF' }}>Scroll to explore</span>
             <motion.div
               animate={{ y: [0, 6, 0] }}
               transition={{ repeat: Infinity, duration: 1.4, ease: "easeInOut" }}
               style={{ color: isLight ? '#D1AF62' : '#4FD1FF' }}
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="md:w-5 md:h-5">
                 <polyline points="6 9 12 15 18 9" />
               </svg>
             </motion.div>
@@ -249,8 +249,8 @@ export default function Home() {
       <BentoGallery />
 
       {/* TRUST SIGNALS */}
-      <section 
-        className={`py-48 relative overflow-hidden ${isLight ? "border-t border-[#A38970]/20" : "border-t border-[#4FD1FF]/20"}`}
+      <section
+        className={`py-16 md:py-32 lg:py-48 relative overflow-hidden ${isLight ? "border-t border-[#A38970]/20" : "border-t border-[#4FD1FF]/20"}`}
         style={{
           backgroundColor: isLight ? '#FFFFFF' : '#0F172A',
           color: isLight ? '#3E3730' : '#E0E7FF'
@@ -269,7 +269,7 @@ export default function Home() {
            initial="hidden"
            whileInView="visible"
            viewport={{ once: true, margin: "-100px" }}
-           className="relative z-10 max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-8 md:gap-10"
+           className="relative z-10 max-w-6xl mx-auto px-4 md:px-6 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 lg:gap-10"
         >
           {[
             { icon: Users, stat: "5000+", label: "Students Trained" },
@@ -283,7 +283,7 @@ export default function Home() {
                 variants={fadeUp}
                 whileHover={{ scale: 1.02, y: -10 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="group relative rounded-[1.5rem] border p-8 text-center shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(209,175,98,0.15)] transition-all duration-500 overflow-hidden"
+                className="group relative rounded-2xl md:rounded-[1.5rem] border p-6 md:p-8 text-center shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(209,175,98,0.15)] transition-all duration-500 overflow-hidden"
                 style={{
                   backgroundColor: isLight ? '#FFFFFF' : '#1E293B',
                   borderColor: isLight ? '#A38970/10' : '#4FD1FF/30'
@@ -306,10 +306,10 @@ export default function Home() {
                 </motion.div>
 
                 {/* Typography */}
-                <div className="relative z-10 text-5xl font-extrabold mb-2 tracking-tighter drop-shadow-sm group-hover:transition-colors duration-500" style={{ color: isLight ? '#3E3730' : '#E0E7FF' }}>
+                <div className="relative z-10 text-3xl md:text-4xl lg:text-5xl font-extrabold mb-2 tracking-tighter drop-shadow-sm group-hover:transition-colors duration-500" style={{ color: isLight ? '#3E3730' : '#E0E7FF' }}>
                   {item.stat}
                 </div>
-                <div className="relative z-10 font-bold text-xs uppercase tracking-[0.2em] group-hover:transition-colors duration-500" style={{ color: isLight ? '#A38970' : '#CBD5E1' }}>
+                <div className="relative z-10 font-bold text-[10px] md:text-xs uppercase tracking-[0.15em] md:tracking-[0.2em] group-hover:transition-colors duration-500" style={{ color: isLight ? '#A38970' : '#CBD5E1' }}>
                   {item.label}
                 </div>
                 
@@ -322,8 +322,8 @@ export default function Home() {
       </section>
 
       {/* TESTIMONIALS — SOCIAL PROOF */}
-      <section 
-        className="py-32 relative"
+      <section
+        className="py-16 md:py-24 lg:py-32 relative"
         style={{
           backgroundColor: isLight ? '#FFFFFF' : '#0F172A',
           color: isLight ? '#3E3730' : '#E0E7FF',
@@ -343,11 +343,11 @@ export default function Home() {
           whileInView="visible"
           viewport={{ once: true }}
           variants={stagger}
-          className="relative z-10 max-w-7xl mx-auto px-6"
+          className="relative z-10 max-w-7xl mx-auto px-4 md:px-6"
         >
           <motion.h2
             variants={fadeUp}
-            className="text-4xl md:text-5xl font-bold text-center mb-6 tracking-tight drop-shadow-sm"
+            className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-4 md:mb-6 tracking-tight drop-shadow-sm"
             style={{ color: isLight ? '#3E3730' : '#E0E7FF' }}
           >
             Learners, Not Just Students
@@ -355,13 +355,13 @@ export default function Home() {
 
           <motion.p
             variants={fadeUp}
-            className="text-center mb-20 max-w-2xl mx-auto text-lg"
+            className="text-center mb-12 md:mb-16 lg:mb-20 max-w-2xl mx-auto text-base md:text-lg"
             style={{ color: isLight ? '#A38970' : '#CBD5E1' }}
           >
             Real people. Real progress. Real confidence. Read what our community has to say.
           </motion.p>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {[
               {
                 name: "Rajesh Kumar",
@@ -372,7 +372,7 @@ export default function Home() {
               {
                 name: "Priya Sharma",
                 role: "Beginner Trader",
-                text: "No fear anymore. I finally understand what I’m doing and approach the market calmly.",
+                text: "No fear anymore. I finally understand what I'm doing and approach the market calmly.",
                 initials: "PS",
               },
               {
@@ -381,11 +381,29 @@ export default function Home() {
                 text: "Structured, practical, and grounded in reality. The best educational investment I've made.",
                 initials: "AP",
               },
+              {
+                name: "Sneha Reddy",
+                role: "Options Trader",
+                text: "The options strategies taught here are pure gold! I'm now consistently profitable with my Nifty trades.",
+                initials: "SR",
+              },
+              {
+                name: "Vikram Singh",
+                role: "IT Professional",
+                text: "From complete beginner to confident trader in 6 months. The mentorship made all the difference!",
+                initials: "VS",
+              },
+              {
+                name: "Ananya Desai",
+                role: "Financial Analyst",
+                text: "Finally a course that focuses on risk management first. My portfolio has never been more stable.",
+                initials: "AD",
+              },
             ].map((t, i) => (
               <motion.div
                 key={i}
                 variants={fadeUp}
-                className="rounded-3xl border p-10 shadow-lg hover:shadow-xl transition-shadow flex flex-col justify-between"
+                className="rounded-2xl md:rounded-3xl border p-6 md:p-8 lg:p-10 shadow-lg hover:shadow-xl transition-shadow flex flex-col justify-between"
                 style={{
                   backgroundColor: isLight ? '#FFFFFF' : '#1E293B',
                   borderColor: isLight ? '#A38970/20' : '#4FD1FF/30',
@@ -399,7 +417,7 @@ export default function Home() {
                     ))}
                   </div>
 
-                  <p className="mb-10 leading-relaxed text-lg italic font-medium" style={{ color: isLight ? '#3E3730' : '#E0E7FF' }}>
+                  <p className="mb-6 md:mb-8 lg:mb-10 leading-relaxed text-base md:text-lg italic font-medium" style={{ color: isLight ? '#3E3730' : '#E0E7FF' }}>
                     &ldquo;{t.text}&rdquo;
                   </p>
                 </div>
@@ -420,8 +438,8 @@ export default function Home() {
       </section>
 
       {/* CTA — PERSONAL INVITE */}
-      <section 
-        className="py-48 relative overflow-hidden"
+      <section
+        className="py-16 md:py-32 lg:py-48 relative overflow-hidden"
         style={{
           backgroundColor: isLight ? '#FFFFFF' : '#0F172A',
           borderTop: `1px solid ${isLight ? '#A38970/20' : '#4FD1FF/20'}`
@@ -440,18 +458,18 @@ export default function Home() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
-          className="relative z-10 max-w-4xl mx-auto px-6 text-center"
+          className="relative z-10 max-w-4xl mx-auto px-4 md:px-6 text-center"
         >
-          <h2 className="text-5xl font-extrabold mb-8 tracking-tight drop-shadow-sm" style={{ color: isLight ? '#3E3730' : '#E0E7FF' }}>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-6 md:mb-8 tracking-tight drop-shadow-sm" style={{ color: isLight ? '#3E3730' : '#E0E7FF' }}>
             Start Your Trading Journey the Right Way
           </h2>
-          <p className="text-xl mb-12 max-w-2xl mx-auto" style={{ color: isLight ? '#A38970' : '#CBD5E1' }}>
+          <p className="text-base md:text-lg lg:text-xl mb-8 md:mb-10 lg:mb-12 max-w-2xl mx-auto" style={{ color: isLight ? '#A38970' : '#CBD5E1' }}>
             Learn with structure, discipline, and clarity &mdash; not shortcuts.
           </p>
 
           <Link
             href="/courses"
-            className="inline-block px-12 py-5 bg-[#D1AF62] text-white rounded-full font-bold text-lg hover:shadow-[0_0_30px_rgba(209,175,98,0.4)] hover:bg-[#C09E51] transition-all duration-300 hover:scale-105"
+            className="inline-block px-8 md:px-10 lg:px-12 py-4 md:py-5 bg-[#D1AF62] text-white rounded-full font-bold text-base md:text-lg hover:shadow-[0_0_30px_rgba(209,175,98,0.4)] hover:bg-[#C09E51] transition-all duration-300 hover:scale-105"
           >
             Explore Courses
           </Link>
