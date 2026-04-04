@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, ReactNode, useRef } from "react"
+import { useState, ReactNode, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
@@ -29,13 +29,14 @@ const ctaButton = ({ href, label, icon, isLight }: { href: string; label: string
     href={href}
     whileHover={{ scale: 1.03 }}
     whileTap={{ scale: 0.98 }}
+    transition={{ type: "spring", stiffness: 400, damping: 25 }}
     onHoverStart={(e) => {
       (e.currentTarget as HTMLElement).style.filter = 'brightness(1.08)';
     }}
     onHoverEnd={(e) => {
       (e.currentTarget as HTMLElement).style.filter = 'brightness(1)';
     }}
-    className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full font-bold text-base md:text-lg transition-all duration-300 cursor-pointer"
+    className="inline-flex items-center justify-center gap-1 sm:gap-2 px-3 py-2 sm:px-4 sm:py-2.5 md:px-6 md:py-3 rounded-full font-bold text-xs sm:text-sm md:text-base lg:text-lg transition-all duration-300 cursor-pointer whitespace-nowrap smooth-transform"
     style={buttonStyle}
   >
     {icon}
@@ -180,6 +181,17 @@ export default function WebinarsPage() {
   const [activeModal, setActiveModal] = useState<ActiveModalProps>({ type: null, id: "", title: "", price: "" })
   const [activeServiceTab, setActiveServiceTab] = useState<string>("webinar")
   const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    // Check if mobile on client side
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const closeModal = () => setActiveModal({ type: null, id: "", title: "", price: "" })
 
@@ -250,7 +262,7 @@ export default function WebinarsPage() {
           '--fin-border-light': isLight ? '#A38970' : '#4FD1FF',
           '--fin-border-divider': isLight ? '#D6CCBE' : '#334155'
         } as React.CSSProperties}
-        className={`${isLight ? 'bg-white text-[var(--fin-text-primary)]' : 'bg-[#0F172A] text-[#E0E7FF]'} min-h-screen transition-colors duration-500 font-sans`}
+        className={`${isLight ? 'bg-white text-[var(--fin-text-primary)]' : 'bg-[#0F172A] text-[#E0E7FF]'} min-h-screen theme-transition font-sans`}
       >
         <Navigation />
 
@@ -447,11 +459,11 @@ export default function WebinarsPage() {
             <div className="relative">
               <div
                 ref={scrollContainerRef}
-                className="overflow-x-auto scrollbar-hide"
+                className="overflow-x-auto scrollbar-hide -mx-4 px-4"
                 style={{ scrollBehavior: 'smooth' }}
               >
                 <motion.div
-                  className="flex gap-6 pb-4 px-16 items-start"
+                  className="flex gap-4 sm:gap-6 pb-4 px-2 sm:px-4 md:px-8 lg:px-16 items-start"
                   variants={premiumStagger}
                   initial="hidden"
                   animate="visible"
