@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation"
 import { useAuth } from "@/context/AuthContext"
 import { useTheme } from "@/hooks/useTheme"
 import supabase from "@/lib/supabaseClient"
-import { Menu, X, LogIn, LogOut, User as UserIcon } from "lucide-react"
+import { Menu, X, LogIn, LogOut, User as UserIcon, LayoutDashboard } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ThemeToggle } from "@/components/theme-toggle"
 
@@ -34,7 +34,12 @@ export function Navigation() {
 
   // Add Admin link if user is admin
   if (role === 'admin') {
-    navItems.push({ label: "Admin", href: "/admin" })
+    navItems.unshift({ label: "Admin", href: "/admin" })
+  }
+
+  // Add My Dashboard link for logged-in students (non-admin)
+  if (user && role && role !== 'admin') {
+    navItems.unshift({ label: "Dashboard", href: "/dashboard" })
   }
 
   // Track scroll for style + hide-on-scroll-down behaviour
